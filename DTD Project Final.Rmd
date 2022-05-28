@@ -132,7 +132,7 @@ if (exists('dtd')) {
       read_csv('data/dtd.csv')
   }
 } else {
-  raw_master_no_null <-
+  dtd <-
     read_csv('data/dtd.csv')
 }
 
