@@ -44,8 +44,7 @@ write_csv(raw, 'data/raw.csv')
 ## Filtering
 manipulate the raw master data frame
 ```{r include=FALSE}
-# Clean the data by removing blanks and NA values. Not the best approach, but a fair start.
-# Consider coming back and filling in values. Determine the station ID for each location and vice versa. Then fill blanks
+# Consider coming back and calculating values
 if (exists('raw')) {
   if (is.data.frame(get('raw'))) {
     raw_master <- raw %>%
