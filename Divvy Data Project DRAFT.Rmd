@@ -132,13 +132,10 @@ write_csv(raw_master, 'draft_data/dtd_raw_master.csv')
 
 ## Outlier Manipulation
 
-Manipulation using raw data with nulls to visualize the distributions of no outlier data before and after removing null records, since 1.14M records dropped. The order in which you remove nulls or outliers matters. By removing outliers first, the data frame ***rm_w\_null_wo_outlier*** has a wider range (up to 8.5 hours) compared with having dropped the nulls before removing outliers.
-
-
 For this analysis, since the data is not normally distributed, outliers will be determined with logic for simplicity, though further analysis is encouraged.
 
 ### Outliers removed before nulls
-Read in the data to remove values past 99 hours since obvious errors and can't be shown in HH:MM:SS format
+
 ```{r include=FALSE}
 
 if (exists('raw_master')) {
@@ -152,18 +149,18 @@ if (exists('raw_master')) {
 }
 
 # Removing outliers while trips with null station names and locations are still in the data
-threshold <- 0.997 # Somewhat arbitrarily determined
+threshold <- 28800 # Somewhat arbitrarily determined. 8 hours representing a full day trip on one bike (extremely unusual but entirely possible)
 
 filtered_member <- raw_master %>%
   filter(member_casual == 'member') %>%
-  filter(trip_length_sec < quantile(trip_length_sec, threshold)) #7801 records removed
+  filter(trip_length_sec < threshold)
 
 
 filtered_casual <- raw_master %>%
   filter(member_casual == 'casual')%>%
-  filter(trip_length_sec < quantile(trip_length_sec, threshold)) #6047 records removed
+  filter(trip_length_sec < threshold)
 
-rm_w_null_wo_outlier <- bind_rows(filtered_casual, filtered_member) #(combined 13848 records removed as outliers)
+rm_w_null_wo_outlier <- bind_rows(filtered_casual, filtered_member) 
 dtd <- rm_w_null_wo_outlier %>% drop_na()
 ```
 
@@ -201,17 +198,17 @@ if (exists('raw_master_no_null')) {
 }
 
 # Removing outliers while trips with null station names and locations are still in the data
-threshold <- 0.997 # Somewhat arbitrarily determined
+threshold <- 28800 # Somewhat arbitrarily determined
 
 filtered_member_no_null <- raw_master_no_null %>%
   filter(member_casual == 'member') %>%
-  filter(trip_length_sec < quantile(trip_length_sec, threshold)) #7801 records removed
+  filter(trip_length_sec < threshold)
 
 filtered_casual_no_null <- raw_master_no_null %>%
   filter(member_casual == 'casual') %>%
-  filter(trip_length_sec < quantile(trip_length_sec, threshold)) #6047 records removed
+  filter(trip_length_sec < threshold)
 
-# Clean Master Data set. No records below 60 seconds, nulls, or greater than 99.7 of data in their category
+# Clean Master Data set. No records below 60 seconds, nulls, or greater than 8 hours
 rm_wo_null_wo_outlier <-
   bind_rows(filtered_casual_no_null, filtered_member_no_null)
 
@@ -227,11 +224,11 @@ if (exists('raw_master')) {
 
 filtered_member_raw <- raw_master %>%
   filter(member_casual == 'member') %>%
-  filter(trip_length_sec < quantile(trip_length_sec, threshold)) #7801 records removed
+  filter(trip_length_sec < threshold)
 
 filtered_casual_raw <- raw_master %>%
   filter(member_casual == 'casual') %>%
-  filter(trip_length_sec < quantile(trip_length_sec, threshold)) #6047 records removed
+  filter(trip_length_sec < threshold)
 ```
 
 
@@ -268,7 +265,7 @@ colnames(record_counts) <- c('type', 'member', 'casual')
 write_csv(record_counts, 'draft_data/record_counts.csv')
 ```
 
-*wo outlier and w null* is equal to *w null wo outlier* because the nulls remain in both cases. It's saying the same thing in a different way. 1) Remove all data points greater than 99.7 percent of the data and leave the remaining nulls in the data (allows for nulls to be removed as outliers) vs 2) leave the nulls in the data and remove 99.7 percent of the data (allows for nulls to be removed as outliers). In both cases, the data will null values were always able to be removed (and either were or weren't, but done the same).
+*wo outlier and w null* is equal to *w null wo outlier* because the nulls remain in both cases. It's saying the same thing in a different way. 1) Remove all data points greater than 8 hours and leave the remaining nulls in the data (allows for nulls to be removed as outliers) vs 2) leave the nulls in the data and remove trips longer than 8 hours (allows for nulls to be removed as outliers). In both cases, the data will null values were always able to be removed (and either were or weren't, but done the same).
 
 ```{r echo=FALSE}
 if (exists('record_counts')) {
@@ -433,7 +430,7 @@ colSums(!is.na(dtd))
 
 ### IQR by member_casual
 ```{r}
-# Compare the means. Interesting as I'd have expected members to be on longer rides so they avoid higher fees
+# Compare the means.
 dtd_member <- dtd %>%
   filter(member_casual == 'member')
 
