@@ -1,0 +1,171 @@
+---
+title: "DTD Project Final"
+author: "Jarryd Wannenburg"
+date: "5/27/2022"
+output: pdf_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+
+# Libraries
+```{r include=FALSE}
+rm(list = ls())
+options(readr.show_col_types = FALSE)
+# Set working directory
+setwd("C:/Users/jarry/Desktop/Google Data Analytics Cert/bike_share")
+# Load packages
+library(tidyverse)
+library(lubridate)
+library(hms)
+library(ggplot2)
+```
+
+
+# Loading
+Create the raw data frames
+```{r eval=FALSE, include=FALSE}
+# Create a list of csv files which represent data to be combined after converting to object in excel
+files <- list.files(path = 'raw_data/', pattern = ".csv$")
+raw <- read_csv(paste0('raw_data/', files[2]))
+for (csv in files[-2]) {
+  frame <- read_csv(paste0('raw_data/', csv))
+  raw <- bind_rows(raw, frame)
+}
+
+rm(frame, csv, files)
+write_csv(raw, 'data/raw.csv')
+```
+
+
+# Cleaning
+## Filtering
+manipulate the raw master data frame
+```{r include=FALSE}
+# Clean the data by removing blanks and NA values. Not the best approach, but a fair start.
+# Consider coming back and filling in values. Determine the station ID for each location and vice versa. Then fill blanks
+if (exists('raw')) {
+  if (is.data.frame(get('raw'))) {
+    raw_master <- raw %>%
+      mutate(
+        day_of_week = noquote(weekdays(started_at)),
+        trip_length = as_hms(ended_at - started_at),
+        trip_length_sec = as.numeric(trip_length) # Easier to deal with seconds than hms format
+      ) %>%
+      filter(trip_length_sec >= 60, # Remove 61500 trips likely to be test runs or redocking errors (https://ride.divvybikes.com/system-data)
+             trip_length_sec < 86400) # Any trip over 24 hours should automatically be removed
+    
+    rm(raw)
+  } else {
+    raw_master <- read_csv('data/raw.csv') %>%
+      mutate(
+        day_of_week = noquote(weekdays(started_at)),
+        trip_length = as_hms(ended_at - started_at),
+        trip_length_sec = as.numeric(trip_length) # Easier to deal with seconds than hms format
+      ) %>%
+      filter(trip_length_sec >= 60, # Remove 61500 trips likely to be test runs or redocking errors (https://ride.divvybikes.com/system-data)
+             trip_length_sec < 86400) # Any trip over 24 hours should automatically be removed
+    
+  }
+} else{
+  raw_master <- read_csv('data/raw.csv') %>%
+    mutate(
+      day_of_week = noquote(weekdays(started_at)),
+      trip_length = as_hms(ended_at - started_at),
+      trip_length_sec = as.numeric(trip_length) # Easier to deal with seconds than hms format
+    ) %>%
+    filter(trip_length_sec >= 60, # Remove 61500 trips likely to be test runs or redocking errors (https://ride.divvybikes.com/system-data)
+             trip_length_sec < 86400) # Any trip over 24 hours should automatically be removed
+}
+
+# Show the distribution of null values
+colSums(is.na(raw_master))
+
+# Bikes don't necessarily need to be picked up or dropped off at a station. But we do need to map the data, so we need a lat and lon
+raw_master_no_null <- raw_master[!(is.na(raw_master$end_lat) | raw_master$end_lat=="" | is.na(raw_master$start_lat) | raw_master$start_lat==""), ]
+```
+
+```{r eval=FALSE, include=FALSE}
+# Write this intermediary df to a file to prevent having to run the data loading and manipulation each time
+write_csv(raw_master_no_null,
+          'data/dtd_raw_master_wo_null_w_outlier.csv')
+write_csv(raw_master, 'data/dtd_raw_master.csv')
+```
+
+
+## Outlier Manipulation
+For this analysis, since the data is not normally distributed, outliers will be determined with logic for simplicity, though further analysis is encouraged. Outliers will be deemed as trips likely to be errors as opposed to variation in the data.
+```{r include=FALSE}
+# Removing outliers once trips with null lat,lon are removed
+if (exists('raw_master_no_null')) {
+  if (is.data.frame(get('raw_master_no_null'))) {
+    print('raw_master_no_null already in environment')
+  } else{
+    raw_master_no_null <-
+      read_csv('data/dtd_raw_master_wo_null_w_outlier.csv')
+  }
+} else {
+  raw_master_no_null <-
+    read_csv('data/dtd_raw_master_wo_null_w_outlier.csv')
+}
+
+threshold <- 8*60*60 # 8 hours which represents a "full" day trip. With this business models, bikes aren't meant to be kept for long periods.
+
+dtd <- raw_master_no_null %>%
+  filter(trip_length_sec <= threshold)
+```
+
+```{r eval=FALSE, include=FALSE}
+write_csv(dtd, 'data/dtd.csv')
+```
+
+
+# Analysis
+## Summary by user type
+```{r}
+if (exists('dtd')) {
+  if (is.data.frame(get('dtd'))) {
+    print('dtd already in environment')
+  } else{
+    dtd <-
+      read_csv('data/dtd.csv')
+  }
+} else {
+  raw_master_no_null <-
+    read_csv('data/dtd.csv')
+}
+
+# Compare the means
+dtd_member <- dtd %>%
+  filter(member_casual == 'member')
+
+dtd_casual <- dtd %>%
+  filter(member_casual == 'casual')
+
+a <- c("Min.", "Q1", "Median", "Mean", "Q3", "Max")
+b <- hms(summary(dtd$trip_length_sec)) %>% unlist() %>% as.numeric() %>% round(0)
+c <- hms(summary(dtd_member$trip_length_sec)) %>% unlist() %>% as.numeric() %>% round(0)
+d <- hms(summary(dtd_casual$trip_length_sec)) %>% unlist() %>% as.numeric() %>% round(0)
+
+dtd_summary_member_casual_sec <- as.data.frame(cbind(a,b,c,d))
+colnames(dtd_summary_member_casual_sec) <- c("Statistic", "Combined", "Member", "Casual")
+
+e <- b %>% hms()
+f <- c %>% hms() 
+g <- d %>% hms()
+
+dtd_summary_member_casual_hms <- data.frame(a,e,f,g)
+colnames(dtd_summary_member_casual_hms) <- c("Statistic", "Combined", "Member", "Casual")
+
+dtd_summary_member_casual_sec
+dtd_summary_member_casual_hms
+
+```
+
+```{r}
+colSums(is.na(dtd))
+write_csv(dtd %>% drop_na(), 'data/dtd_no_null.csv')
+```
+

@@ -1,0 +1,465 @@
+---
+title: "Divvy Data Project"
+author: "Jarryd Wannenburg"
+date: "5/24/2022"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE)
+```
+
+# Libraries
+```{r include=FALSE}
+options(readr.show_col_types = FALSE)
+# Set working directory
+setwd("C:/Users/jarry/Desktop/Google Data Analytics Cert/bike_share")
+# Load packages
+library(tidyverse)
+library(lubridate)
+library(hms)
+library(ggplot2)
+```
+
+# Loading
+
+Create the raw dataframes
+
+```{r include=FALSE}
+# Create a list of csv files which represent data to be combined after converting to object in excel
+files <- list.files(path = 'raw_draft_data/', pattern = ".csv$")
+raw <- read_csv(paste0('raw_draft_data/', files[2]))
+for (csv in files[-2]) {
+  frame <- read_csv(paste0('raw_draft_data/', csv))
+  raw <- bind_rows(raw, frame)
+}
+rm(frame, csv, files)
+write_csv(raw, 'draft_data/raw.csv')
+```
+
+```{r}
+# Show the distribution of null values
+colSums(is.na(raw))
+```
+
+# Cleaning
+
+manipulate the raw master data frame
+```{r include=FALSE}
+# Clean the data by removing blanks and NA values. Not the best approach, but a fair start.
+# Consider coming back and filling in values. Determine the station ID for each location and vice versa. Then fill blanks
+if (exists('raw')) {
+  if (is.data.frame(get('raw'))) {
+    raw_master <- raw %>%
+      mutate(
+        day_of_week = noquote(weekdays(started_at)),
+        trip_length = as_hms(ended_at - started_at),
+        trip_length_sec = as.numeric(trip_length)#, # Easier to deal with seconds than hms format
+        #bin_dist = factor(trip_length_sec)
+      ) %>%
+      filter(trip_length_sec > 60, # Remove 61500 trips likely to be test runs or redocking errors (https://ride.divvybikes.com/system-data). Not outliers
+             trip_length_sec < 86400) # Any trip over 24 hours should automatically be removed
+    
+    rm(raw)
+  } else {
+    raw_master <- read_csv('draft_data/raw.csv') %>%
+      mutate(
+        day_of_week = noquote(weekdays(started_at)),
+        trip_length = as_hms(ended_at - started_at),
+        trip_length_sec = as.numeric(trip_length)#, # Easier to deal with seconds than hms format
+        #bin_dist = factor(trip_length_sec)
+      ) %>%
+      filter(trip_length_sec > 60, # Remove 61500 trips likely to be test runs or redocking errors (https://ride.divvybikes.com/system-data). Not outliers
+             trip_length_sec < 86400) # Any trip over 24 hours should automatically be removed
+    
+  }
+} else{
+  raw_master <- read_csv('draft_data/raw.csv') %>%
+    mutate(
+      day_of_week = noquote(weekdays(started_at)),
+      trip_length = as_hms(ended_at - started_at),
+      trip_length_sec = as.numeric(trip_length)#, # Easier to deal with seconds than hms format
+      #bin_dist = factor(trip_length_sec)
+    ) %>%
+    filter(trip_length_sec > 60, # Remove 61500 trips likely to be test runs or redocking errors (https://ride.divvybikes.com/system-data). Not outliers
+             trip_length_sec < 86400) # Any trip over 24 hours should automatically be removed
+}
+
+# Show the distribution of null values
+colSums(is.na(raw_master))
+
+# Bikes don't necessarily need to be picked up or dropped off at a station. But we do need to map the data, so we need a lat and lon
+raw_master_no_null <- raw_master[!(is.na(raw_master$end_lat) | raw_master$end_lat=="" | is.na(raw_master$start_lat) | raw_master$start_lat==""), ]
+```
+
+Commented out since record count has been created
+```{r include=FALSE}
+# Check the number of records for each rider category. Ideally, these should be similar in size
+a <- raw_master %>%
+  filter(member_casual == 'member') %>%
+  count() %>%
+  as.numeric()
+b <- raw_master %>%
+  filter(member_casual == 'casual') %>%
+  count() %>%
+  as.numeric()
+
+# Check the number of records for each rider category. Ideally, these should be similar in size.
+c <- raw_master_no_null %>%
+  filter(member_casual == 'member') %>%
+  count() %>%
+  as.numeric()
+
+d <- raw_master_no_null %>%
+  filter(member_casual == 'casual') %>%
+  count() %>%
+  as.numeric()
+```
+
+```{r include=FALSE}
+# Write this intermediary df to a file to prevent having to run the data loading and manipulation each time
+write_csv(raw_master_no_null,
+          'draft_data/dtd_raw_master_wo_null_w_outlier.csv')
+write_csv(raw_master, 'draft_data/dtd_raw_master.csv')
+```
+
+```{r eval=FALSE, include=FALSE}
+# rm(raw_master_no_null)
+# rm(raw_master)
+```
+
+# Raw Data Distribution
+
+## Outlier Manipulation
+
+Manipulation using raw data with nulls to visualize the distributions of no outlier data before and after removing null records, since 1.14M records dropped. The order in which you remove nulls or outliers matters. By removing outliers first, the data frame ***rm_w\_null_wo_outlier*** has a wider range (up to 8.5 hours) compared with having dropped the nulls before removing outliers.
+
+
+For this analysis, since the data is not normally distributed, outliers will be determined with logic for simplicity, though further analysis is encouraged.
+
+### Outliers removed before nulls
+Read in the data to remove values past 99 hours since obvious errors and can't be shown in HH:MM:SS format
+```{r include=FALSE}
+
+if (exists('raw_master')) {
+  if (is.data.frame(get('raw_master'))) {
+    print('raw_master already in environment')
+  } else{
+    raw_master <- read_csv('draft_data/dtd_raw_master.csv')
+  }
+} else {
+  raw_master <- read_csv('draft_data/dtd_raw_master.csv')
+}
+
+# Removing outliers while trips with null station names and locations are still in the data
+threshold <- 0.997 # Somewhat arbitrarily determined
+
+filtered_member <- raw_master %>%
+  filter(member_casual == 'member') %>%
+  filter(trip_length_sec < quantile(trip_length_sec, threshold)) #7801 records removed
+
+
+filtered_casual <- raw_master %>%
+  filter(member_casual == 'casual')%>%
+  filter(trip_length_sec < quantile(trip_length_sec, threshold)) #6047 records removed
+
+rm_w_null_wo_outlier <- bind_rows(filtered_casual, filtered_member) #(combined 13848 records removed as outliers)
+dtd <- rm_w_null_wo_outlier %>% drop_na()
+```
+
+Commented out since record count has been created
+```{r include=FALSE}
+e <- filtered_member %>% count() %>% as.numeric()
+g <- filtered_member %>% drop_na() %>% count() %>% as.numeric()
+
+f <- filtered_casual %>% count() %>% as.numeric()
+h <- filtered_casual %>% drop_na() %>% count() %>% as.numeric()
+```
+
+```{r include=FALSE}
+# Write this intermediary df to a file to prevent having to run the data loading and manipulation each time
+write_csv(rm_w_null_wo_outlier,
+          'draft_data/dtd_raw_master_wo_outlier_w_null.csv')
+write_csv(dtd, 'draft_data/dtd.csv')
+# rm(filtered_casual, filtered_member, threshold)
+```
+
+### Outliers removed after nulls
+
+```{r include=FALSE}
+# Removing outliers once trips with null station names and locations are removed
+if (exists('raw_master_no_null')) {
+  if (is.data.frame(get('raw_master_no_null'))) {
+    print('raw_master_no_null already in environment')
+  } else{
+    raw_master_no_null <-
+      read_csv('draft_data/dtd_raw_master_wo_null_w_outlier.csv')
+  }
+} else {
+  raw_master_no_null <-
+    read_csv('draft_data/dtd_raw_master_wo_null_w_outlier.csv')
+}
+
+# Removing outliers while trips with null station names and locations are still in the data
+threshold <- 0.997 # Somewhat arbitrarily determined
+
+filtered_member_no_null <- raw_master_no_null %>%
+  filter(member_casual == 'member') %>%
+  filter(trip_length_sec < quantile(trip_length_sec, threshold)) #7801 records removed
+
+filtered_casual_no_null <- raw_master_no_null %>%
+  filter(member_casual == 'casual') %>%
+  filter(trip_length_sec < quantile(trip_length_sec, threshold)) #6047 records removed
+
+# Clean Master Data set. No records below 60 seconds, nulls, or greater than 99.7 of data in their category
+rm_wo_null_wo_outlier <-
+  bind_rows(filtered_casual_no_null, filtered_member_no_null)
+
+if (exists('raw_master')) {
+  if (is.data.frame(get('raw_master'))) {
+    print('raw_master already in environment')
+  } else{
+    raw_master <- read_csv('draft_data/dtd_raw_master.csv')
+  }
+} else {
+  raw_master <- read_csv('draft_data/dtd_raw_master.csv')
+}
+
+filtered_member_raw <- raw_master %>%
+  filter(member_casual == 'member') %>%
+  filter(trip_length_sec < quantile(trip_length_sec, threshold)) #7801 records removed
+
+filtered_casual_raw <- raw_master %>%
+  filter(member_casual == 'casual') %>%
+  filter(trip_length_sec < quantile(trip_length_sec, threshold)) #6047 records removed
+```
+
+
+```{r include=FALSE}
+write_csv(rm_wo_null_wo_outlier, 'draft_data/rm_wo_null_wo_outlier.csv')
+```
+
+
+## Record count table
+Commented out since record count has been created
+```{r include=FALSE}
+i <- filtered_member_no_null %>% count() %>% as.numeric()
+j <- filtered_casual_no_null %>% count() %>% as.numeric()
+k <- filtered_member_raw %>% count() %>% as.numeric()
+l <- filtered_casual_raw %>% count() %>% as.numeric()
+```
+
+Commented out since record count has been created
+```{r include=FALSE}
+record_counts <-
+  data.frame(matrix(
+    data = c('w null w outlier', a, b,
+             'wo null w outlier', c, d,
+             'wo outlier w null **', e, f,
+             'wo outlier wo null', g, h,
+             'wo null wo outlier', i, j,
+             'w null wo outlier **', k, l),
+    nrow = 6,
+    ncol = 3,
+    byrow = TRUE
+  ))
+
+colnames(record_counts) <- c('type', 'member', 'casual')
+write_csv(record_counts, 'draft_data/record_counts.csv')
+```
+
+*wo outlier and w null* is equal to *w null wo outlier* because the nulls remain in both cases. It's saying the same thing in a different way. 1) Remove all data points greater than 99.7 percent of the data and leave the remaining nulls in the data (allows for nulls to be removed as outliers) vs 2) leave the nulls in the data and remove 99.7 percent of the data (allows for nulls to be removed as outliers). In both cases, the data will null values were always able to be removed (and either were or weren't, but done the same).
+
+```{r echo=FALSE}
+if (exists('record_counts')) {
+  if (is.data.frame(get('record_counts'))) {
+    print('record_counts already in environment')
+  } else{
+    record_counts <-
+      read_csv('draft_data/record_counts.csv')
+  }
+} else {
+  record_counts <-
+    read_csv('draft_data/record_counts.csv')
+}
+
+record_counts
+```
+
+
+## Visualization
+```{r echo=FALSE}
+rm(list = ls())
+```
+### 15 mins
+
+```{r echo=FALSE}
+if (exists('rm_w_null_wo_outlier')) {
+  if (is.data.frame(get('rm_w_null_wo_outlier'))) {
+    print('rm_w_null_wo_outlier already in environment')
+  } else {
+    rm_w_null_wo_outlier <-
+      read_csv('draft_data/dtd_raw_master_wo_outlier_w_null.csv')
+  }
+} else {
+  rm_w_null_wo_outlier <-
+    read_csv('draft_data/dtd_raw_master_wo_outlier_w_null.csv')
+}
+
+if (exists('dtd')) {
+  if (is.data.frame(get('dtd'))) {
+    print('dtd already in environment')
+  } else {
+    dtd <- read_csv('draft_data/dtd.csv')
+  }
+} else {
+  dtd <- read_csv('draft_data/dtd.csv')
+}
+```
+
+Compute what percentile 100 mins (3600 seconds) corresponds to
+```{r eval=FALSE, include=FALSE}
+dtd_member <- dtd %>%
+  filter(member_casual == 'member') %>%
+  select(trip_length_sec) %>%
+  unlist() #%>% ecdf()
+
+dtd_member(6000)
+
+dtd_casual <- dtd %>%
+  filter(member_casual == 'casual') %>%
+  select(trip_length_sec) %>%
+  unlist() #%>% ecdf()
+
+dtd_casual(6000) * 100
+
+```
+
+
+```{r echo=FALSE}
+bin_count <- 20
+
+ggplot(NULL, aes(trip_length)) +
+  geom_histogram(
+    data = rm_w_null_wo_outlier,
+    aes(fill = 'black'),
+    col = I('black'),
+    bins = bin_count
+  ) +
+  geom_histogram(
+    data = dtd,
+    aes(fill = 'red'),
+    col = I('black'),
+    bins = bin_count
+  ) + xlab('Trip Length (hrs)') +
+  facet_wrap(~ member_casual, ncol=2) +
+  scale_y_continuous(labels = scales::comma, name = "") +
+  labs(title = 'Removing Blank Records', subtitle = 'Errors and outliers removed for both charts', caption = 'Each bar represents a 15 minute interval') +
+  scale_fill_identity(
+    name = '',
+    guide = 'legend',
+    labels = c('With Blanks', 'Without Blanks')
+  ) + guides(color = "none") + theme(legend.position="bottom", axis.text = element_text(size = 8))
+
+ggsave('images/removing_blanks_histogram_15.png', last_plot())
+```
+
+### 30 mins
+```{r}
+bin_count <- 10 
+
+ggplot(NULL, aes(trip_length)) +
+  geom_histogram(
+    data = rm_w_null_wo_outlier,
+    aes(fill = 'black'),
+    col = I('black'),
+    bins = bin_count
+  ) +
+  geom_histogram(
+    data = dtd,
+    aes(fill = 'red'),
+    col = I('black'),
+    bins = bin_count
+  ) + xlab('Trip Length (hrs)') +
+  facet_wrap(~ member_casual, ncol=2) +
+  scale_y_continuous(labels = scales::comma, name = "") +
+  labs(title = 'Removing Blank Records', subtitle = 'Errors and outliers removed for both charts', caption = 'Each bar represents a 30 minute interval') +
+  scale_fill_identity(
+    name = '',
+    guide = 'legend',
+    labels = c('With Blanks', 'Without Blanks')
+  ) + guides(color = "none") + theme(legend.position="bottom", axis.text = element_text(size = 8))
+
+ggsave('images/removing_blanks_histogram_30.png', last_plot())
+```
+
+### 60 mins
+```{r}
+bin_count <- 5
+
+ggplot(NULL, aes(trip_length)) +
+  geom_histogram(
+    data = rm_w_null_wo_outlier,
+    aes(fill = 'black'),
+    col = I('black'),
+    bins = bin_count
+  ) +
+  geom_histogram(
+    data = dtd,
+    aes(fill = 'red'),
+    col = I('black'),
+    bins = bin_count
+  ) + xlab('Trip Length (hrs)') +
+  facet_wrap(~ member_casual, ncol=2) +
+  scale_y_continuous(labels = scales::comma, name = "") +
+  labs(title = 'Removing Blank Records', subtitle = 'Errors and outliers removed for both charts', caption = 'Each bar represents a 1 hour interval') +
+  scale_fill_identity(
+    name = '',
+    guide = 'legend',
+    labels = c('With Blanks', 'Without Blanks')
+  ) + guides(color = "none") + theme(legend.position="bottom", axis.text = element_text(size = 8))
+
+ggsave('images/removing_blanks_histogram_60.png', last_plot())
+```
+
+
+# Analyze
+## Summary
+### Record counts
+```{r echo=FALSE}
+colSums(is.na(dtd))
+colSums(!is.na(dtd))
+```
+
+### IQR by member_casual
+```{r}
+# Compare the means. Interesting as I'd have expected members to be on longer rides so they avoid higher fees
+dtd_member <- dtd %>%
+  filter(member_casual == 'member')
+
+dtd_casual <- dtd %>%
+  filter(member_casual == 'casual')
+
+a <- c("Min.", "Q1", "Median", "Mean", "Q3", "Max")
+b <- hms(summary(dtd$trip_length_sec)) %>% unlist() %>% as.numeric() %>% round(0)
+c <- hms(summary(dtd_member$trip_length_sec)) %>% unlist() %>% as.numeric() %>% round(0)
+d <- hms(summary(dtd_casual$trip_length_sec)) %>% unlist() %>% as.numeric() %>% round(0)
+
+dtd_summary_member_casual_sec <- as.data.frame(cbind(a,b,c,d))
+colnames(dtd_summary_member_casual_sec) <- c("Statistic", "Combined", "Member", "Casual")
+
+e <- b %>% hms()
+f <- c %>% hms() 
+g <- d %>% hms()
+
+dtd_summary_member_casual_hms <- data.frame(a,e,f,g)
+colnames(dtd_summary_member_casual_hms) <- c("Statistic", "Combined", "Member", "Casual")
+
+dtd_summary_member_casual_sec
+```
+
+
+```{r}
+unique(dtd$member_casual)
+unique(dtd$rideable_type)
+```
