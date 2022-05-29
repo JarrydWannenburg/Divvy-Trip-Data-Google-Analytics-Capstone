@@ -42,8 +42,17 @@ Three questions will guide the future marketing program:
 Moreno has assigned you the first question to answer: How do annual members and casual riders use Cyclistic bikes differently?
 
 ## Report
-### Business task and stakeholder analysis
+### Business task and stakeholder analysis 
+The goal of this analysis is to understand how casual and annual riders use Cyclistic’s bikes differently by identifying trends and characteristics from historical data, so a new targeted marketing strategy can be developed centered on converting casual riders into annual members to maximize growth.
 
+Knowing your customer is the first step to being able to market your product, so data on these groups is very valuable as insights can direct focus and highlight key areas that are fundamental to business decisions. In this example, an analysis of two customer groups could provide characteristics that Lily and her team can use in their marketing campaigns.
+
+There are four primary stakeholders in this project:
+1. _Lily Moreno_ - Director of Marketing: She is responsible for the development of campaigns and initiatives to promote the bike-share program. These may include email, social media, and other channels. Lily’s goal is to design targeted marketing strategies aimed at converting casual riders into annual members through the most effective digital channels
+2. _Cyclistic executive team_: The executive team will determine whether or not to approve Lily’s marketing campaign. To facilitate their decision, they want key insights and high-quality visuals assessing the situation.
+3. _Cyclistic marketing analytics team_: A team, which I am a part of, consisting of data analysts who are responsible for collecting, analyzing, and reporting data that helps guide Cyclistic marketing strategy.
+4. _Casual riders_ - Target customers: Casual riders are those who purchase single-ride or full-day passes. They may be recurring customers who have not committed to the annual pass, or they may be one-time riders (unable to answer this due to data privacy), therefore insights gathered from this group will need to be at an aggregate level. Converting casual riders into members is the core focus of this analysis since its believed that maximizing the number of annual members will be key to future growth. No Personally Identifiable Information (PII) exists for these users.
+5. _Cyclistic members_ - Group to maximize: Members are those who have purchased the annual pass and are believed to be the most profitable customers.
 
 ### Data preparation
 
