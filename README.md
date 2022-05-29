@@ -8,5 +8,4 @@ The draft version includes code that excludes all null values (naively) whereas 
 ## Contents
 This repository contains:
 - R file(s) used in the project
-- Powerpoint presentation with visuals built in Tableau (Tableau document is too large to upload)
 - Written report through the eyes of a data analyst working on this project assigned the question: How do annual members and casual riders use Cyclistic bikes differently?
