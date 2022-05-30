@@ -55,9 +55,21 @@ There are four primary stakeholders in this project:
 5. _Cyclistic members_ - Group to maximize: Members are those who have purchased the annual pass and are believed to be the most profitable customers.
 
 ### Data preparation
+To make data decisions, you need data. For this project, I sourced data from the ['divvy-tripdata' bucket](https://divvy-tripdata.s3.amazonaws.com/index.html) under the following [license](https://ride.divvybikes.com/data-license-agreement). To respect users' privacy, any PII in the data has been removed and attempting to circumvent this is in direct violation of the licensing agreement. The data came in the form of 12 separate CSV files from May 2021 through April 2022 totaling 1GB (5,661,482 rows). 
 
+After assessing the data, I found that there were some integrity issues stemming from data cleanliness, however there were no biases evident in the data. As a whole, the data ROCCCs. It comes from the [company](https://ride.divvybikes.com/system-data) itself and is widely used, so it is _reliable_. The dataset is _original_ and can be found on Divvy’s website and points towards the same data bucket. The dataset is _comprehensive_ as it contains vital information needed for this analysis including timing and location data. Most importantly, it captures the rider status of each trip which allows for comparison between casual and member riders. New data is added to the source every month with the most recent being that of April 2022 (time of analysis is May 2022), so the data is _current_. Finally, this data source is _cited_ as it’s a part of the Google Data Analytics curriculum available on [Coursera](https://www.coursera.org/professional-certificates/google-data-analytics) and, therefore, has been cited/used thousands of times. 
+
+Simply having data does not mean that you'll have a strong analysis. The data in hand need to be relevant to the question posed. While this dataset is very limited, since there’s no information about the rider other than their classification, there lies value in knowing the characteristics of the trips typical to each group. By understanding the trips being taken by each group, we can effectively market memberships to casual riders in hopes of converting them and market to current members to increase retention. 
+
+While the dataset available ROCCCs, there were some problems I noticed while preparing the data:
+1. The lack of personal rider data makes it difficult to build a profile typical of each rider by location, age group, or gender (since this data is unavailable in this specific version of the dataset). Therefore, the analysis is restricited to characteristics of the _trips_ taken by each group.
+2. There also appear to be outliers in the data which take the form of extremely long trip durations. For this task, outliers were removed from the member and casual rider groups if the trip duration did not seem to make sense (i.e., less than 60 seconds or greater than 8 hours which represents a “full day” trip on one bike). 60 seconds was chosen because the divvy team themselves [preprocess](https://ride.divvybikes.com/system-data) their data to remove trips under 60 seconds.
+3. Since I wanted to visualize the starting and ending points for each trip, I had to remove a small amount of _possibly_ valid trips since the latitude and longitude were not recorded (around 1,500 trips).
 
 ### Data dictionary
+The sole dataset used for this capstone project is the ‘divvy-tripdata’ dataset available through their website and the Google Data Analytics course and hosted on amazon S3. The following data dictionary is of the filtered raw dataset (removed trips shorter than 60 seconds and longer than 24 hours)
+
+
 
 
 ### Data processing
