@@ -93,43 +93,70 @@ _\* Field created in R_
 
 _\*\* Field created in Tableau_
 
+_The null values were evenly distributed amongst the months_
+
 ### Data processing
-Due to the size of the data, I chose to process it using R. Using R for data cleaning and manipulation also increases reproducibility since the code is documented and easily ran. During my initial analysis, I noticed that there were several thousand trips that were extremely long (between 8 and 24 hours). Because the distribution was heavily positively (right) skewed and not normally distributed, I wasn't able to use traditional means of outlier analysis like the 68-95-99.7% rule. The sheer size of the data also ruled out analytical methods like the Shapiro-Wilk Test (size must be between 3-5000) and Grubbs Test (not normally distributed and simply too big). I then considered using a boxplot and removing points that exceeded the maximum (Q3 + 1.5\*IQR), but that removed trips above 42 minutes and 50 seconds (which seemed too restrictive). Removing bike rides with durations longer than 43 minutes may make statistical sense, but I believe that it goes against common sense. It is entirely possible to have trips up and well above an hour or more. Ultimately, I decided to err on the side of caution with this preliminary analysis and only remove trips if they exceeded 8 hours in duration (which would be the length of a "full-day" rental). After filtering the data, I also decided to stick to median values for measures of central tendency, which came about as the median is more resistant to outliers than the mean.
+Due to the size of the data, I chose to process it using R. Using R for data cleaning and manipulation also increases reproducibility since the code is documented and easily ran. While merging the datasets to form one master dataset, I noticed that there were several thousand trips that were extremely long (between 8 and 24 hours). Because the distribution was heavily positively (right) skewed and not normally distributed, I wasn't able to use traditional means of outlier analysis like the 68-95-99.7% rule. The sheer size of the data also ruled out analytical methods like the Shapiro-Wilk Test (size must be between 3-5000) and Grubbs Test (not normally distributed and simply too big). I then considered using a boxplot and removing points that exceeded the maximum (Q3 + 1.5\*IQR), but that removed trips above 42 minutes and 50 seconds (which seemed too restrictive). Removing bike rides with durations longer than 43 minutes may make statistical sense, but I believe that it goes against common sense. It is entirely possible to have trips up and well above an hour or more. Ultimately, I decided to err on the side of caution with this preliminary analysis and only remove trips if they exceeded 8 hours in duration (which would be the length of a "full-day" rental). After filtering the data, I also decided to stick to median values for measures of central tendency, which came about as the median is more resistant to outliers than the mean.
 
-For data visualization, I’m using Tableau as it’s publicly available and can produce high quality visuals. Initially, I used Tableau Public for visualizations but eventually had to switch to Tableau Desktop (free trail) since the size of the source data file was larger than 1GB (1.15G). 
-
- 
+For data visualization, I used Tableau as it’s publicly available and can produce high quality visuals. Initially, I used Tableau Public for visualizations but eventually had to switch to Tableau Desktop (free trial) since the size of the source data file was larger than 1GB (1.15G). After loading the data in, I created a minute representation of the trip length.
 
 ### Analysis
-
+Using the available data, I was able to clearly show how annual members and casual riders use Cyclistic bikes differently. The structure of my findings follow a set of guided questions:
+* What do users ride?
+* When do they ride? (monthly/seasonal view)
+* What days are they riding? (weekly view)
+* What time are they riding? (hourly view)
+* Where do they start their trips?
+* Where do they end their trips?
+* How long are their trips?
 
 #### Distribution
+![A view of the distribution of trips across duration and rideable type](images/Distribution.png)
 
 
 #### Ride of choice
+![A view of trip counts by rideable type and member type](images/Ride%20of%20choice.png)
 
 
 #### Seasonality
+![A view of trip counts per user type by season, month, and rideable type](images/Seasonality.png)
 
 
 #### Day of the week
+![A view of trip counts per user type by day and rideable type](images/Day%20of%20the%20week.png)
 
 
 #### Hourly
+![A view of trip counts per user type by hour and rideable type](images/Hourly%20view.png)
 
 
 #### Start station
+![A view of trip counts per user type, start latitude and longitude](images/Start%20station.png)
 
 
 #### End station
+![A view of trip counts per user type, end latitude and longitude](images/End%20station.png)
 
 
 #### Trip duration
+![A view of the median trip duration per user type by day and rideable type](images/Trip%20duration.png)
 
 
 ### Conclusion and recommendations
+Conclusion:
 
+Recommendations:
+1. Include docked bikes in suite of bikes available to members
+2. Focus marketing leading into the summer months (April, May, June)
+3. Develop social media campaigns targeting casual and member riders separately as they two groups are different:
+    - Casual: Clips of the shoreline/tourism sites and benefits of a membership since casual riders bike along the shore the most.
+    - Member: Clips reflecting accessibility and ease of use since members mainly bike within the city.
 
 ### Next steps
-
-
+The following next steps are related to a deeper analysis of the data:
+* Determine a suitable threshold for trip length based on business knowledge and data analytics
+* Investigate seasonality effects in more detail. Seasonality may affect the times people ride outside or the day view of weekly distribution. 
+* Add in weather data to see what conditions are preferable for riding for each group.
+* Investigate how trip start and end locations differ amongst bike types and seasonality. 
+* See how many trips in the data reflect round trips using the start and end latitude and longitude. This would give us part of the picture of how users are using the bikes.
+* Calculate distance traveled (using as the crow flies as a proxy) using start latitude and longitude and end latitude and longitude to then see how distance differs between the two groups.
