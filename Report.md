@@ -64,16 +64,39 @@ Simply having data does not mean that you'll have a strong analysis. The data in
 While the dataset available ROCCCs, there were some problems I noticed while preparing the data:
 1. The lack of personal rider data makes it difficult to build a profile typical of each rider by location, age group, or gender (since this data is unavailable in this specific version of the dataset). Therefore, the analysis is restricited to characteristics of the _trips_ taken by each group.
 2. There also appear to be outliers in the data which take the form of extremely long trip durations. For this task, outliers were removed from the member and casual rider groups if the trip duration did not seem to make sense (i.e., less than 60 seconds or greater than 8 hours which represents a “full day” trip on one bike). 60 seconds was chosen because the divvy team themselves [preprocess](https://ride.divvybikes.com/system-data) their data to remove trips under 60 seconds.
-3. Since I wanted to visualize the starting and ending points for each trip, I had to remove a small amount of _possibly_ valid trips since the latitude and longitude were not recorded (around 1,500 trips).
+3. Since I wanted to visualize the starting and ending points for each trip, I had to remove a small amount trips since the latitude and longitude were not recorded (around 1,700 trips).
 
 ### Data dictionary
-The sole dataset used for this capstone project is the ‘divvy-tripdata’ dataset available through their website and the Google Data Analytics course and hosted on amazon S3. The following data dictionary is of the filtered raw dataset (removed trips shorter than 60 seconds and longer than 24 hours)
+The sole dataset used for this capstone project is the ‘divvy-tripdata’ dataset available through their website and the Google Data Analytics course and hosted on amazon S3. The following data dictionary is of the filtered raw dataset (removed trips shorter than 60 seconds and longer than 24 hours):
 
+| Field ID             | Data Type  | Description                                                       | Null count |
+|---|---|---|---|
+| ride_id              | Character  | A unique identifier for each trip                                 | 0          |
+| rideable_type        | Character  | Record of bike type (docked bike, electric bike, or classic bike) | 0          |
+| started_at           | Datetime   | Datetime of trip start time                                       | 0          |
+| ended_at             | Datetime   | Datetime of trip end time                                         | 0          |
+| start_station_name   | Character  | Start station name                                                | 766,171    |
+| start_station_id     | Character  | A unique identifier for each start station                        | 766,168    |
+| end_station_name     | Character  | End station name                                                  | 811,749    |
+| end_station_id       | Character  | A unique identifier for each end station                          | 811,749    |
+| start_lat            | Number     | Start latitude                                                    | 0          |
+| start_lon            | Number     | Start longitude                                                   | 0          |
+| end_lat              | Number     | End latitude                                                      | 1,727      |
+| end_lon              | Number     | End longtitude                                                    | 1,727      |
+| member_casual        | Character  | Record of rider type (member or casual)                           | 0          |
+| trip_length \*       | HMS Number | HH:MM:SS representation of trip length (Ended_at -- Started_at)   | 0          |
+| day_of_week \*       | Character  | Record of the name day of Started_at                              | 0          |
+| trip_length_sec \*   | Number     | A second representation of Trip_length                            | 0          |
+| trip length min \*\* | Number     | A minute representation of trip length                            | 0          |
 
-
+_\* Field created in R \*\* Field created in Tableau_
 
 ### Data processing
+Due to the size of the data, I chose to process it using R. Using R for data cleaning and manipulation also increases reproducibility since the code is documented and easily ran. During my initial analysis, I noticed that there were several thousand trips that were extremely long (between 8 and 24 hours). Because the distribution was heavily positively (right) skewed and not normally distributed, I wasn't able to use traditional means of outlier analysis like the 68-95-99.7% rule. The sheer size of the data also ruled out analytical methods like the Shapiro-Wilk Test (size must be between 3-5000) and Grubbs Test (not normally distributed and simply too big). I then considered using a boxplot and removing points that exceeded the maximum (Q3 + 1.5\*IQR), but that removed trips above 42 minutes and 50 seconds (which seemed too restrictive). Removing bike rides with durations longer than 43 minutes may make statistical sense, but I believe that it goes against common sense. It is entirely possible to have trips up and well above an hour or more. Ultimately, I decided to err on the side of caution with this preliminary analysis and only remove trips if they exceeded 8 hours in duration (which would be the length of a "full-day" rental). After filtering the data, I also decided to stick to median values for measures of central tendency, which came about as medians are more resistant to outliers.
 
+For data visualization, I’m using Tableau as it’s publicly available and can produce high quality visuals. Initially, I used Tableau Public for visualizations but eventually had to switch to Tableau Desktop (free trail) since the size of the source data file was larger than 1GB (1.15G). 
+
+ 
 
 ### Analysis
 
