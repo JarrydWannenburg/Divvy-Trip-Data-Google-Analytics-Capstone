@@ -89,7 +89,9 @@ The sole dataset used for this capstone project is the ‘divvy-tripdata’ data
 | trip_length_sec \*   | Number     | A second representation of Trip_length                            | 0          |
 | trip length min \*\* | Number     | A minute representation of trip length                            | 0          |
 
-_\* Field created in R \*\* Field created in Tableau_
+_\* Field created in R_
+
+_\*\* Field created in Tableau_
 
 ### Data processing
 Due to the size of the data, I chose to process it using R. Using R for data cleaning and manipulation also increases reproducibility since the code is documented and easily ran. During my initial analysis, I noticed that there were several thousand trips that were extremely long (between 8 and 24 hours). Because the distribution was heavily positively (right) skewed and not normally distributed, I wasn't able to use traditional means of outlier analysis like the 68-95-99.7% rule. The sheer size of the data also ruled out analytical methods like the Shapiro-Wilk Test (size must be between 3-5000) and Grubbs Test (not normally distributed and simply too big). I then considered using a boxplot and removing points that exceeded the maximum (Q3 + 1.5\*IQR), but that removed trips above 42 minutes and 50 seconds (which seemed too restrictive). Removing bike rides with durations longer than 43 minutes may make statistical sense, but I believe that it goes against common sense. It is entirely possible to have trips up and well above an hour or more. Ultimately, I decided to err on the side of caution with this preliminary analysis and only remove trips if they exceeded 8 hours in duration (which would be the length of a "full-day" rental). After filtering the data, I also decided to stick to median values for measures of central tendency, which came about as the median is more resistant to outliers than the mean.
