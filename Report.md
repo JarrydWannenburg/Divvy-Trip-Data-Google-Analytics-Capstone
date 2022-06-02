@@ -11,7 +11,6 @@
 * [Data processing](https://github.com/JarrydWannenburg/Divvy-Trip-Data-Google-Analytics-Capstone/blob/main/Report.md#data-processing)
 * [Analysis](https://github.com/JarrydWannenburg/Divvy-Trip-Data-Google-Analytics-Capstone/blob/main/Report.md#analysis)
     * [Distribution](https://github.com/JarrydWannenburg/Divvy-Trip-Data-Google-Analytics-Capstone/blob/main/Report.md#distribution)
-    * [Ride of choice](https://github.com/JarrydWannenburg/Divvy-Trip-Data-Google-Analytics-Capstone/blob/main/Report.md#ride-of-choice)
     * [Seasonality](https://github.com/JarrydWannenburg/Divvy-Trip-Data-Google-Analytics-Capstone/blob/main/Report.md#seasonality)
     * [Day of the week](https://github.com/JarrydWannenburg/Divvy-Trip-Data-Google-Analytics-Capstone/blob/main/Report.md#day-of-the-week)
     * [Hourly](https://github.com/JarrydWannenburg/Divvy-Trip-Data-Google-Analytics-Capstone/blob/main/Report.md#hourly)
@@ -48,7 +47,7 @@ The goal of this analysis is to understand how casual and annual riders use Cycl
 Knowing your customer is the first step to being able to market your product, so data on these groups is very valuable as insights can direct focus and highlight key areas that are fundamental to business decisions. In this example, an analysis of two customer groups could provide characteristics that Lily and her team can use in their marketing campaigns.
 
 There are four primary stakeholders in this project:
-1. _Lily Moreno_ - Director of Marketing: She is responsible for the development of campaigns and initiatives to promote the bike-share program. These may include email, social media, and other channels. Lily’s goal is to design targeted marketing strategies aimed at converting casual riders into annual members through the most effective digital channels
+1. _Lily Moreno_ - Director of Marketing: She is responsible for the development of campaigns and initiatives to promote the bike-share program. These may include email, social media, and other channels. Lily’s goal is to design targeted marketing strategies aimed at converting casual riders into annual members through the most effective digital channels.
 2. _Cyclistic executive team_: The executive team will determine whether or not to approve Lily’s marketing campaign. To facilitate their decision, they want key insights and high-quality visuals assessing the situation.
 3. _Cyclistic marketing analytics team_: A team, which I am a part of, consisting of data analysts who are responsible for collecting, analyzing, and reporting data that helps guide Cyclistic marketing strategy.
 4. _Casual riders_ - Target customers: Casual riders are those who purchase single-ride or full-day passes. They may be recurring customers who have not committed to the annual pass, or they may be one-time riders (unable to answer this due to data privacy), therefore insights gathered from this group will need to be at an aggregate level. Converting casual riders into members is the core focus of this analysis since its believed that maximizing the number of annual members will be key to future growth. No Personally Identifiable Information (PII) exists for these users.
@@ -111,11 +110,31 @@ Using the available data, I was able to clearly show how annual members and casu
 * How long are their trips?
 
 #### Distribution
+When looking at the distribution of the data, it's important to remember:
+1. Trips below 60 seconds were removed as they were likely redocking attempts, errors, or trial rides.
+2. Trips above 8 hours were removed are they were likely errors. 8 hours was chosen as a maximum as that represents a “full-day” trip. However, it's important to note that the business model of bike sharing also strongly encourages shorter trips which is evident in the distribution of trip length below.
+
 ![A view of the distribution of trips across duration and rideable type](images/Distribution.png)
 
+As mentioned earlier, the data is heavily positively (right) skewed. The starred curly bracket on both charts demonstrates the extent of this skew which is artificially cut off at 8 hours. The legend to the top right of the data adds context to the different colored sub-bars making up the distribution. 
 
-#### Ride of choice
+Main takeaways:
+1. Both groups take shorter rides over longer rides with the vast majority occuring under an hour.
+2. Members take signficantly fewer longer rides than casual riders even though they have a higher frequency of total rides.
+3. The median value should be used as a measure of central tendency, as opposed to the mean, since the median is more resilient to outliers.
+
+Next Step: Determine a suitable threshold for trip length based on business knowledge and data analytics.
+
 ![A view of trip counts by rideable type and member type](images/Ride%20of%20choice.png)
+
+Causal riders primarily ride either classic or electric bikes though there are some trips (around 10%) that result from docked bikes. Member riders solely ride either classic or electric bikes. It's clear from this visual that there's no docked bike offering to member riders. I believe that including docked bikes as an offering for members could convert casual riders who use these bikes and lead to an increase in our member size.
+
+Main takeaways:
+1. Both rider types prefer classic bikes over electric bikes, so marketing should lean towards these bikes when creating advertisements.
+2. About 10% of casual rides come from docked bikes which don’t appear to be an offering for members. Making these bikes available to members may lead to the conversion of a portion of the casual riders who use docked bikes.
+
+Next step: Consult with financial analysts regarding the cost implications of adding docked bikes as an offering to members.
+
 
 
 #### Seasonality
