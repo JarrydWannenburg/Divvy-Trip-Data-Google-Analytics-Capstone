@@ -159,7 +159,7 @@ Finally, the groups differ in the distribution of ride type. All ride types used
 
 **Key Takeaways:**
 1. Trip volume increases with warmer seasons though it is more apparent in the casual rider group than members.
-2. Casual riders see an increase in all rideable types as volume increases whereas members see a shift in towards classic bikes from electric bikes as the weather warms.
+2. Casual riders see an increase in all rideable types as volume increases, whereas members see a shift in towards classic bikes from electric bikes as the weather warms.
 
 **Next Steps:** 
 - Investigate seasonality effects in more detail. Seasonality may affect the times people ride outside or the day view of weekly distribution. 
@@ -167,31 +167,28 @@ Finally, the groups differ in the distribution of ride type. All ride types used
 
 
 ### Day of the week
-Another interesting difference is the distribution of trips at a daily view. Casual riders see a drastic decline in trips during the week whereas members see a slight increase. 
+Another interesting difference is the distribution of trips at a daily view. Casual riders see a drastic decline in trips during the week, whereas members see a slight increase. 
 
 ![A view of trip counts per user type by day and rideable type](images/Day%20of%20the%20week.png)
 
-Analysis
+There are clear weekly trends in both user groups. Causal riders have a strong preference for weekend trips which is represented by a significant volume increase on those days, and member riders take more trips on a given weekday than a day in the weekend. These two groups are polar opposites at the weekly view which may be the result of members commuting to work during the week and casual riders taking weekend bike rides as an activity.
 
 **Key Takeaways:**
-1. Text
+1. The trip frequency of casual riders significantly increases on the weekend, whereas member riders see a slight decrease.
+2. Proportions of rideable types stay roughly similar for both groups throughout the week.
 
 **Next Steps:** 
-- Text
+- Explore how seasonality affects weekly distribution of trips. 
 
 
 ### Hourly
-preview text
+When focusing in on what time of the day users' cycle, we see a similar shape distribution on the weekends, but the two groups differ during the weekdays. 
 
 ![A view of trip counts per user type by hour and rideable type](images/Hourly%20view.png)
 
-Analysis
-
 **Key Takeaways:**
-1. Text
-
-**Next Steps:** 
-- Text
+1. Casual riders have a unimodal distribution at the daily level with peaks around 5PM, but members have more of a bimodal distribution with peaks at 7/8AM and 5PM.
+2. During the week, both groups have a higher trip frequency peaking from 4-6PM, but their weekend distributions peak from 1-3PM.
 
 
 ### Start station
