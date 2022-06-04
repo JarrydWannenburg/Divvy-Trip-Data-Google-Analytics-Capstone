@@ -109,7 +109,7 @@ Using the available data, I was able to clearly show how annual members and casu
 * Where do they end their trips?
 * How long are their trips?
 
-#### Distribution
+### Distribution
 When looking at the distribution of the data, it's important to remember:
 1. Trips below 60 seconds were removed as they were likely redocking attempts, errors, or trial rides.
 2. Trips above 8 hours were removed are they were likely errors. 8 hours was chosen as a maximum as that represents a “full-day” trip. However, it's important to note that the business model of bike sharing also strongly encourages shorter trips which is evident in the distribution of trip length below.
@@ -118,46 +118,65 @@ When looking at the distribution of the data, it's important to remember:
 
 As mentioned earlier, the data is heavily positively (right) skewed. The starred curly bracket on both charts demonstrates the extent of this skew which is artificially cut off at 8 hours. The legend to the top right of the data adds context to the different colored sub-bars making up the distribution. 
 
-Main takeaways:
+**Key Takeaways:**
 1. Both groups take shorter rides over longer rides with the vast majority occuring under an hour.
 2. Members take signficantly fewer longer rides than casual riders even though they have a higher frequency of total rides.
 3. The median value should be used as a measure of central tendency, as opposed to the mean, since the median is more resilient to outliers.
 
-Next Step: Determine a suitable threshold for trip length based on business knowledge and data analytics.
+**Next Step:** 
+- Determine a suitable threshold for trip length based on business knowledge and data analytics.
 
 ![A view of trip counts by rideable type and member type](images/Ride%20of%20choice.png)
 
 Causal riders primarily ride either classic or electric bikes though there are some trips (around 10%) that result from docked bikes. Member riders solely ride either classic or electric bikes. It's clear from this visual that there's no docked bike offering to member riders. I believe that including docked bikes as an offering for members could convert casual riders who use these bikes and lead to an increase in our member size.
 
-Main takeaways:
+**Key Takeaways:**
 1. Both rider types prefer classic bikes over electric bikes, so marketing should lean towards these bikes when creating advertisements.
 2. About 10% of casual rides come from docked bikes which don’t appear to be an offering for members. Making these bikes available to members may lead to the conversion of a portion of the casual riders who use docked bikes.
 
-Next step: Consult with financial analysts regarding the cost implications of adding docked bikes as an offering to members.
+**Next Step:** 
+- Consult with financial analysts regarding the cost implications of adding docked bikes as an offering to members.
 
+### Seasonality
+As I began exploring the data, intuition told me that warmer weather would yield a higher frequency of trips. The visual below shows the data supported that claim.
 
-
-#### Seasonality
 ![A view of trip counts per user type by season, month, and rideable type](images/Seasonality.png)
 
+There are clear seasonal effects on the number of trips taken for both groups with peak frequency in summer months. The distributions are also slightly different, with the member group appearing to be more resilient to colder weather. This could be because of self selection – those who know they will ride year-round, whether residents or relying on biking as transportation to work, choose to become members.
 
-#### Day of the week
+The member distribution is also dominated by classic bikes. It's clear that this group has an strong preference to classic bikes thoughout the year. However, causal riders, as seen by the distributions of October through April, appear to prefer classic bikes only as the weather warms up. 
+
+Finally, the groups differ in the distribution of ride type. All ride types used by casual riders rise with warmer temperatures and fall with colder temperatures, but the same is not true for member riders. We see the same is true for classic bikes, but electric bikes see a decline in frequency from May through September. The difference appears to be picked up by classic bikes which may indicate that members switch from electric bikes to casual bikes as the weather warms. 
+
+**Key Takeaways:**
+1. Trip volume increases with warmer seasons though it is more apparent in the casual rider group than members.
+2. Casual riders see an increase in all rideable types as volume increases whereas members see a shift in towards classic bikes from electric bikes as the weather warms.
+
+**Next Steps:** 
+- Investigate seasonality effects in more detail. Seasonality may affect the times people ride outside or the day view of weekly distribution. 
+- Add weather data to see what conditions are preferable for riding for each group.
+
+
+### Day of the week
+Another interesting difference is the distribution of trips at a daily view. Casual riders see a drastic decline in trips during the week whereas members see a slight increase. 
+
 ![A view of trip counts per user type by day and rideable type](images/Day%20of%20the%20week.png)
 
 
-#### Hourly
+
+### Hourly
 ![A view of trip counts per user type by hour and rideable type](images/Hourly%20view.png)
 
 
-#### Start station
+### Start station
 ![A view of trip counts per user type, start latitude and longitude](images/Start%20station.png)
 
 
-#### End station
+### End station
 ![A view of trip counts per user type, end latitude and longitude](images/End%20station.png)
 
 
-#### Trip duration
+### Trip duration
 ![A view of the median trip duration per user type by day and rideable type](images/Trip%20duration.png)
 
 
