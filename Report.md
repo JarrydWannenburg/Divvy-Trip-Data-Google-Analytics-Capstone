@@ -50,7 +50,7 @@ Knowing your customer is the first step to being able to market your product, so
 
 There are four primary stakeholders in this project:
 1. _Lily Moreno_ - Director of Marketing: She is responsible for the development of campaigns and initiatives to promote the bike-share program. These may include email, social media, and other channels. Lily’s goal is to design targeted marketing strategies aimed at converting casual riders into annual members through the most effective digital channels.
-2. _Cyclistic executive team_: The executive team will determine whether or not to approve Lily’s marketing campaign. To facilitate their decision, they want key insights and high-quality visuals assessing the situation.
+2. _Cyclistic executive team_: The executive team will determine whether to approve Lily’s marketing campaign. To facilitate their decision, they want key insights and high-quality visuals assessing the situation.
 3. _Cyclistic marketing analytics team_: A team, which I am a part of, consisting of data analysts who are responsible for collecting, analyzing, and reporting data that helps guide Cyclistic marketing strategy.
 4. _Casual riders_ - Target customers: Casual riders are those who purchase single-ride or full-day passes. They may be recurring customers who have not committed to the annual pass, or they may be one-time riders (unable to answer this due to data privacy), therefore insights gathered from this group will need to be at an aggregate level. Converting casual riders into members is the core focus of this analysis since its believed that maximizing the number of annual members will be key to future growth. No Personally Identifiable Information (PII) exists for these users.
 5. _Cyclistic members_ - Group to maximize: Members are those who have purchased the annual pass and are believed to be the most profitable customers.
@@ -59,14 +59,14 @@ There are four primary stakeholders in this project:
 ### Data preparation
 To make data decisions, you need data. For this project, I sourced data from the ['divvy-tripdata' bucket](https://divvy-tripdata.s3.amazonaws.com/index.html) under the following [license](https://ride.divvybikes.com/data-license-agreement). To respect users' privacy, any PII in the data has been removed and attempting to circumvent this is in direct violation of the licensing agreement. The data came in the form of 12 separate CSV files from May 2021 through April 2022 totaling 1GB (5,661,482 rows). 
 
-After assessing the data, I found that there were some integrity issues stemming from data cleanliness, however there were no biases evident in the data. As a whole, the data ROCCCs. It comes from the [company](https://ride.divvybikes.com/system-data) itself and is widely used, so it is _reliable_. The dataset is _original_ and can be found on Divvy’s website and points towards the same data bucket. The dataset is _comprehensive_ as it contains vital information needed for this analysis including timing and location data. Most importantly, it captures the rider status of each trip which allows for comparison between casual and member riders. New data is added to the source every month with the most recent being that of April 2022 (time of analysis is May 2022), so the data is _current_. Finally, this data source is _cited_ as it’s a part of the Google Data Analytics curriculum available on [Coursera](https://www.coursera.org/professional-certificates/google-data-analytics) and, therefore, has been cited/used thousands of times. 
+After assessing the data, I found that there were some integrity issues stemming from data cleanliness, however there were no biases evident in the data. The data ROCCCs. It comes from the [company](https://ride.divvybikes.com/system-data) itself and is widely used, so it is _reliable_. The dataset is _original_ and can be found on Divvy’s website and points towards the same data bucket. The dataset is _comprehensive_ as it contains vital information needed for this analysis including timing and location data. Most importantly, it captures the rider status of each trip which allows for comparison between casual and member riders. New data is added to the source every month with the most recent being that of April 2022 (time of analysis is May 2022), so the data is _current_. Finally, this data source is _cited_ as it’s a part of the Google Data Analytics curriculum available on [Coursera](https://www.coursera.org/professional-certificates/google-data-analytics) and, therefore, has been cited/used thousands of times. 
 
 Simply having data does not mean that you'll have a strong analysis. The data in hand need to be relevant to the question posed. While this dataset is very limited, since there’s no information about the rider other than their classification, there lies value in knowing the characteristics of the trips typical to each group. By understanding the trips being taken by each group, we can effectively market memberships to casual riders in hopes of converting them and market to current members to increase retention. 
 
 While the dataset available ROCCCs, there were some problems I noticed while preparing the data:
-1. The lack of personal rider data makes it difficult to build a profile typical of each rider by location, age group, or gender (since this data is unavailable in this specific version of the dataset). Therefore, the analysis is restricited to characteristics of the _trips_ taken by each group.
+1. The lack of personal rider data makes it difficult to build a profile typical of each rider by location, age group, or gender (since this data is unavailable in this specific version of the dataset). Therefore, the analysis is restricted to characteristics of the _trips_ taken by each group.
 2. There also appear to be outliers in the data which take the form of extremely long trip durations. For this task, outliers were removed from the member and casual rider groups if the trip duration did not seem to make sense (i.e., less than 60 seconds or greater than 8 hours which represents a “full day” trip on one bike). 60 seconds was chosen because the divvy team themselves [preprocess](https://ride.divvybikes.com/system-data) their data to remove trips under 60 seconds.
-3. Since I wanted to visualize the starting and ending points for each trip, I had to remove a small amount trips since the latitude and longitude were not recorded (around 1,700 trips).
+3. Since I wanted to visualize the starting and ending points for each trip, I had to remove a small number of trips since the latitude and longitude were not recorded (around 1,700 trips).
 
 
 ### Data dictionary
@@ -106,11 +106,11 @@ For data visualization, I used Tableau as it’s publicly available and can prod
 
 
 ### Analysis
-Using the available data, I was able to clearly show how annual members and casual riders use Cyclistic bikes differently. The structure of my findings follow a set of guided questions:
+Using the available data, I was able to clearly show how annual members and casual riders use Cyclistic bikes differently. The structure of my findings follows a set of guided questions:
 * What do users ride?
-* When do they ride? (monthly/seasonal view)
-* What days are they riding? (weekly view)
-* What time are they riding? (hourly view)
+* When do they ride? (Monthly/seasonal view)
+* What days are they riding? (Weekly view)
+* What time are they riding? (Hourly view)
 * Where do they start their trips?
 * Where do they end their trips?
 * How long are their trips?
@@ -126,8 +126,8 @@ When looking at the distribution of the data, it's important to remember:
 As mentioned earlier, the data is heavily positively (right) skewed. The starred curly bracket on both charts demonstrates the extent of this skew which is artificially cut off at 8 hours. The legend to the top right of the data adds context to the different colored sub-bars making up the distribution. 
 
 **Key Takeaways:**
-1. Both groups take shorter rides over longer rides with the vast majority occuring under an hour.
-2. Members take signficantly fewer longer rides than casual riders even though they have a higher frequency of total rides.
+1. Both groups take shorter rides over longer rides with the vast majority occurring under an hour.
+2. Members take significantly fewer longer rides than casual riders even though they have a higher frequency of total rides.
 3. The median value should be used as a measure of central tendency, as opposed to the mean, since the median is more resilient to outliers.
 
 **Next Step:** 
@@ -150,9 +150,9 @@ As I began exploring the data, intuition told me that warmer weather would yield
 
 ![A view of trip counts per user type by season, month, and rideable type](images/Seasonality.png)
 
-There are clear seasonal effects on the number of trips taken for both groups with peak frequency in summer months. The distributions are also slightly different, with the member group appearing to be more resilient to colder weather. This could be because of self selection – those who know they will ride year-round, whether residents or relying on biking as transportation to work, choose to become members.
+There are clear seasonal effects on the number of trips taken for both groups with peak frequency in summer months. The distributions are also slightly different, with the member group appearing to be more resilient to colder weather. This could be because of self-selection – those who know they will ride year-round, whether residents or relying on biking as transportation to work, choose to become members.
 
-The member distribution is also dominated by classic bikes. It's clear that this group has an strong preference to classic bikes thoughout the year. However, causal riders, as seen by the distributions of October through April, appear to prefer classic bikes only as the weather warms up. 
+The member distribution is also dominated by classic bikes. It's clear that this group has a strong preference to classic bikes throughout the year. However, causal riders, as seen by the distributions of October through April, appear to prefer classic bikes only as the weather warms up. 
 
 Finally, the groups differ in the distribution of ride type. All ride types used by casual riders rise with warmer temperatures and fall with colder temperatures, but the same is not true for member riders. We see the same is true for classic bikes, but electric bikes see a decline in frequency from May through September. The difference appears to be picked up by classic bikes which may indicate that members switch from electric bikes to casual bikes as the weather warms. 
 
@@ -170,7 +170,7 @@ Another interesting difference is the distribution of trips at a daily view. Cas
 
 ![A view of trip counts per user type by day and rideable type](images/Day%20of%20the%20week.png)
 
-There are clear weekly trends in both user groups. Causal riders have a strong preference for weekend trips which is represented by a significant volume increase on those days, and member riders take more trips on a given weekday than a day in the weekend. These two groups are polar opposites at the weekly view which may be the result of members commuting to work during the week and casual riders taking weekend bike rides as an activity.
+There are clear weekly trends in both user groups. Causal riders have a strong preference for weekend trips which is represented by a significant volume increase on those days, and member riders take more trips on a given weekday than a day in the weekend. These two groups are opposites at the weekly view which may be the result of members commuting to work during the week and casual riders taking weekend bike rides as an activity.
 
 **Key Takeaways:**
 1. The trip frequency of casual riders significantly increases on the weekend, whereas member riders see a slight decrease.
@@ -220,16 +220,16 @@ Although the data prevents insights into distance traveled, it does afford the o
 
 **Key Takeaways:**
 1. Casual riders take significantly longer rides than members do, with docked bikes having the longest duration. 
-2. Members take shorter rides during the week, though more rides are occurring. The trips on the weekend, though slighly less frequent, are longer in duration.
+2. Members take shorter rides during the week, though more rides are occurring. The trips on the weekend, though slightly less frequent, are longer in duration.
 
 **Next Steps:** 
 - Explore how seasonality affects trip duration.
 
 
 ### Conclusion and recommendations
-Knowing your customer is the first step to being able to market your product, and understanding the differences between casual and member riders will facilitate the creation of a new targeted marketing strategy centered on converting casual riders into annual members to maximize growth.
+Knowing your customer is the first step to being able to market your product. Understanding the differences between casual and member riders will facilitate the creation of a new targeted marketing strategy centered on converting casual riders into annual members to maximize growth.
 
-At a group level, casual riders are signficantly different to member riders. The two groups differ in what they ride, the days and seasons they ride during, the times they ride, their start and end locations, and their trip duration. Despite these numerous differences, there are similarities: both groups ride more during warmer months, prefer classic bikes over electric (and, for casual riders, docked) bikes, and peak in trip frequency around 5PM during the week and 2PM on the weekend.
+At a group level, casual riders are significantly different to member riders. The two groups differ in what they ride, the days and seasons they ride during, the times they ride, their start and end locations, and their trip duration. Despite these numerous differences, there are similarities: both groups ride more during warmer months, prefer classic bikes over electric (and, for casual riders, docked) bikes, and peak in trip frequency around 5PM during the week and 2PM on the weekend.
 
 **Recommendations:**
 1. Include docked bikes in the bikes available to members.
