@@ -177,7 +177,7 @@ There are clear weekly trends in both user groups. Causal riders have a strong p
 1. The trip frequency of casual riders significantly increases on the weekend, whereas member riders see a slight decrease.
 2. Proportions of rideable types stay roughly similar for both groups throughout the week.
 
-**Next Steps:** 
+**Next Step:** 
 - Explore how seasonality affects weekly distribution of trips. 
 
 
@@ -191,32 +191,27 @@ When focusing in on what time of the day users' cycle, we see a similar shape di
 2. During the week, both groups have a higher trip frequency peaking from 4-6PM, but their weekend distributions peak from 1-3PM.
 
 
-### Start station
-preview text
+### Location
+The two groups of riders also differ in where they start and end their trips. An important note for this map is that only (lat,lon) locations with more than 360 trips recorded are shown (360 chosen somewhat arbitrarily).
+#### Start station
 
 ![A view of trip counts per user type, start latitude and longitude](images/Start%20station.png)
 
-Analysis
-
 **Key Takeaways:**
-1. Text
+1. Casual riders begin more trips closer to the shore, whereas members start locations appear to be more evenly distributed throughout the city.
+2. Members have a cluster of start location volume towards the lower right of the map which may reflect resident-commuter riders.
 
-**Next Steps:** 
-- Text
-
-
-### End station
-preview text
+#### End station
 
 ![A view of trip counts per user type, end latitude and longitude](images/End%20station.png)
 
-Analysis
-
 **Key Takeaways:**
-1. Text
+1. At a group level, riders are ending their trips in very close proximity to where they started them.
+2. The clusters for each group have the same shape and size for the start and end locations.
 
 **Next Steps:** 
-- Text
+- Investigate how trip start and end locations differ amongst bike types and seasonality. 
+- See how many trips in the data reflect round trips using the start and end latitude and longitude.
 
 
 ### Trip duration
