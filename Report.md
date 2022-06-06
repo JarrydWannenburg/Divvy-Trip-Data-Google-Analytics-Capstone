@@ -210,29 +210,30 @@ The two groups of riders also differ in where they start and end their trips. An
 
 **Next Steps:** 
 - Investigate how trip start and end locations differ amongst bike types and seasonality. 
-- See how many trips in the data reflect round trips using the start and end latitude and longitude.
+- Calculate displacement (as the crow flies) using start lat,lon and end lat,lon to see how displacement differs between the two groups. 
 
 
 ### Trip duration
-preview text
+Although the data prevents insights into distance traveled, it does afford the opportunity to learn about trip duration for each group.
 
 ![A view of the median trip duration per user type by day and rideable type](images/Trip%20duration.png)
 
-Analysis
-
 **Key Takeaways:**
-1. Text
+1. Casual riders take significantly longer rides than members do, with docked bikes having the longest duration. 
+2. Members take shorter rides during the week, though more rides are occurring. The trips on the weekend, though slighly less frequent, are longer in duration.
 
 **Next Steps:** 
-- Text
+- Explore how seasonality affects trip duration.
 
 
 ### Conclusion and recommendations
-Conclusion:
+Knowing your customer is the first step to being able to market your product, and understanding the differences between casual and member riders will facilitate the creation of a new targeted marketing strategy centered on converting casual riders into annual members to maximize growth.
 
-Recommendations:
-1. Include docked bikes in suite of bikes available to members
-2. Focus marketing leading into the summer months (April, May, June)
+At a group level, casual riders are signficantly different to member riders. The two groups differ in what they ride, the days and seasons they ride during, the times they ride, their start and end locations, and their trip duration. Despite these numerous differences, there are similarities: both groups ride more during warmer months, prefer classic bikes over electric (and, for casual riders, docked) bikes, and peak in trip frequency around 5PM during the week and 2PM on the weekend.
+
+**Recommendations:**
+1. Include docked bikes in the bikes available to members.
+2. Focus marketing leading into the summer months (April, May, June).
 3. Develop social media campaigns targeting casual and member riders separately as they two groups are different:
     - Casual: Clips of the shoreline/tourism sites and benefits of a membership since casual riders bike along the shore the most.
     - Member: Clips reflecting accessibility and ease of use since members mainly bike within the city.
@@ -240,8 +241,8 @@ Recommendations:
 
 ### Next steps
 The following next steps are related to a deeper analysis of the data:
-* Determine a suitable threshold for trip length based on business knowledge and data analytics
-* Investigate seasonality effects in more detail. Seasonality may affect the times people ride outside or the day view of weekly distribution. 
+* Determine a suitable threshold for trip length based on business knowledge and data analytics.
+* Investigate seasonality effects in more detail. Seasonality may affect the times people ride outside, the day view of weekly distribution, or the trip duration. 
 * Add in weather data to see what conditions are preferable for riding for each group.
 * Investigate how trip start and end locations differ amongst bike types and seasonality. 
 * See how many trips in the data reflect round trips using the start and end latitude and longitude. This would give us part of the picture of how users are using the bikes.
